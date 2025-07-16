@@ -1,0 +1,335 @@
+openapi: 3.0.3
+info:
+  title: SYSTM Open Marketing API (Retail related only)
+  description: This document is currently in DRAFT status and is subject to change before release.
+  contact:
+    name: Modulus API Support
+    email: api@modulusgroup.eu
+  license:
+    name: Modulus Partner API License
+    url: https://www.modulusgroup.eu/
+  version: 1.0.0
+externalDocs:
+  description: Modulus Web Site
+  url: https://www.modulusgroup.eu/
+tags:
+  - name: Retail / Orders
+  - name: Retail / Items  
+paths:
+  /api/open-marketing/v1/store/items/{itemId}/pictures:
+   parameters:
+    - name: itemId
+      in: path
+      schema:
+        type: string
+      description: The CMS Item Identifier
+      required: true
+   get:
+     tags:
+      - Retail / Items
+     summary: Get player fields information
+     operationId: getItemById
+     responses:
+        200:
+          description: Success
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        400:
+          description: Bad Request 
+          content:
+            'application/json':
+              schema: 
+                "$ref": "#/components/schemas/ProblemDetails"
+        401:
+          description: Unauthorized
+          content:
+            'application/json':
+              schema: 
+                "$ref": "#/components/schemas/ProblemDetails"
+        404:
+          description: Not Found
+          content:
+            'application/json':
+              schema: 
+                "$ref": "#/components/schemas/ProblemDetails"                
+        500:
+          description: Internal Error
+          content:
+            'application/json':
+              schema: 
+                "$ref": "#/components/schemas/ProblemDetails"
+  /api/open-marketing/v1/store/{storeId}/items:
+   parameters:
+    - name: storeId
+      in: path
+      schema:
+        type: string
+      description: The CMS Site Identifier
+      required: true
+   get:
+     tags:
+      - Retail / Items
+     summary: Get player fields information
+     operationId: getStoreStock
+     parameters:
+      - name: searchModel
+        in: query
+        schema:
+          type: string
+        description: Search model object For lookup
+        required: false
+     responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                totalItems:
+                  type: number
+                pageNumber:
+                  type: number
+                pageSize:
+                  type: number
+                items:
+                  "$ref": "#/components/schemas/StoreRetailItem"
+        400:
+          description: Bad Request 
+          content:
+            'application/json':
+              schema: 
+                "$ref": "#/components/schemas/ProblemDetails"
+        401:
+          description: Unauthorized
+          content:
+            'application/json':
+              schema: 
+                "$ref": "#/components/schemas/ProblemDetails"
+        404:
+          description: Not Found
+          content:
+            'application/json':
+              schema: 
+                "$ref": "#/components/schemas/ProblemDetails"                
+        500:
+          description: Internal Error
+          content:
+            'application/json':
+              schema: 
+                "$ref": "#/components/schemas/ProblemDetails"
+  /api/open-marketing/v1/store/orders:
+   get:
+     tags:
+      - Retail / Orders
+     summary: Get list of orders
+     operationId: getOrders
+     parameters:
+      - name: searchModel
+        in: query
+        schema:
+          type: string
+        description: Search model object For lookup
+        required: false
+     responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalItems:
+                    type: number
+                  pageNumber:
+                    type: number
+                  pageSize:
+                    type: number
+                  items:
+                    "$ref": "#/components/schemas/Order"
+        400:
+          description: Bad Request 
+          content:
+            'application/json':
+              schema: 
+                "$ref": "#/components/schemas/ProblemDetails"
+        401:
+          description: Unauthorized
+          content:
+            'application/json':
+              schema: 
+                "$ref": "#/components/schemas/ProblemDetails"           
+        500:
+          description: Internal Error
+          content:
+            'application/json':
+              schema: 
+                "$ref": "#/components/schemas/ProblemDetails"
+   post:
+     tags:
+      - Retail / Orders
+     summary: Place an order
+     operationId: placeOrder
+     requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              playerId:
+                type: string
+                nullable: false
+                maxLength: 21
+              storeId:
+                type: string
+                nullable: false
+              orderItems:
+                type: array
+                nullable: false
+                items:
+                  type: object
+                  properties:
+                    itemId:
+                      type: string
+                      nullable: false
+                      maxLength: 21
+                    quantity:
+                      type: number
+            required:
+              - playerId
+              - shortLabel
+              - longLabel
+     responses:
+      201:
+        description: Created
+        content:
+          'application/json':
+            schema:
+                "$ref": "#/components/schemas/Order"
+        400:
+          description: Bad Request 
+          content:
+            'application/json':
+              schema: 
+                "$ref": "#/components/schemas/ProblemDetails"
+        401:
+          description: Unauthorized
+          content:
+            'application/json':
+              schema: 
+                "$ref": "#/components/schemas/ProblemDetails"                  
+        500:
+          description: Internal Error
+          content:
+            'application/json':
+              schema: 
+                "$ref": "#/components/schemas/ProblemDetails"
+components:
+  schemas:
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+    StoreRetailItem:
+      type: object
+      properties:
+        id: 
+          type: string
+          nullable: false
+          maxLength: 21
+        shortLabel:
+          type: string
+          nullable: false
+          maxLength: 15
+        longLabel:
+          type: string
+          nullable: false
+          maxLength: 30
+        currentPriceInPoints:
+          type: number
+          format: double          
+        siteId:
+          type: number
+          nullable: false
+        storeId:
+          type: string
+          nullable: false
+        inStock:
+          type: boolean
+          nullable: false
+        quantityLeft:
+          type: number
+          nullable: true
+    Order:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            nullable: false
+            maxLength: 21
+          playerId:
+            type: string
+            nullable: false
+            maxLength: 21          
+          items:
+            type: array
+            items:
+              "$ref": "#/components/schemas/OrderItem"
+          status:
+            type: string
+            nullable: false
+            format: enum
+              [approved, delivered, canceled]
+          total:
+              type: number
+              format: double
+          creationTimestamp:
+            type: string
+            format: date-time
+            nullable: false
+    OrderItem:
+      type: object
+      properties:
+        itemId:
+          type: string
+          nullable: false
+          maxLength: 21
+        quantity:
+            type: number
+            nullable: false
+        total:
+            type: number
+            format: double
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: X-API-Key
+      in: header
+    bearer_auth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+    - api_key: []
+    - bearer_auth: []

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<service>
+  <id>notificationservice</id>
+  <name>Galaxis Notification Service</name>
+  <description>This service runs notificationservice</description>
+  <workingdirectory>D:\Galaxis\Program\Bin\notificationservice</workingdirectory>
+  <executable>D:\Galaxis\Program\Bin\notificationservice\NotificationService.Service.exe</executable>
+  <stopexecutable>D:\Galaxis\Program\Bin\WinSW\notificationservice-stop.bat</stopexecutable>
+  <onfailure action="restart" />
+  <log mode="none" />
+</service>

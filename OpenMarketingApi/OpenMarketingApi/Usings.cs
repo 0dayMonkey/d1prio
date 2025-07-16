@@ -1,0 +1,14 @@
+global using ApiTools;
+global using ApiTools.Exceptions;
+global using ApiTools.Models;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.Extensions.Logging;
+global using OpenMarketingApi.Models;
+global using OpenMarketingApi.Interfaces;
+global using Swashbuckle.AspNetCore.Annotations;
+global using System.ComponentModel.DataAnnotations;
+global using System.Runtime.Serialization;
+global using System.Text.Json;
+global using System.Text.Json.Serialization;
+global using ProblemDetails = Microsoft.AspNetCore.Mvc.ProblemDetails;
